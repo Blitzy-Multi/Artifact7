@@ -23,6 +23,20 @@ const express = require('express');
 // Construct the Express application instance that backs the HTTP server.
 const app = express();
 
+// Routing strictness configuration (Express application settings — part of the
+// server bootstrap, not middleware). By default Express matches routes
+// case-INsensitively and ignores trailing slashes, which would expose
+// additional accessible URL variants (e.g. "/Good-Evening", "/GOOD-EVENING",
+// "/good-evening/") beyond the two endpoints this service is specified to
+// expose. Enabling case-sensitive and strict routing constrains the public
+// interface to exactly the declared paths, so every other path falls through to
+// Express's built-in default "404 Not Found" handler. This keeps the routing
+// contract aligned with the "no routes beyond GET / and GET /good-evening"
+// scope. These are configuration flags only — no middleware, dependencies, or
+// extra routes are introduced.
+app.set('case sensitive routing', true);
+app.set('strict routing', true);
+
 // Listening port. Defaults to 3000 and can be overridden via the PORT
 // environment variable without any code change (twelve-factor friendly).
 const PORT = process.env.PORT || 3000;
